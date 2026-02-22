@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iftar Pemuda DUN Bukit Tunggal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+  <style>
+    /* Vibe Malam Ramadan: Ungu Gelap & Emas */
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background-color: #1e1b4b; /* Deep Indigo */
+        color: #f8fafc; 
+        background-image: 
+            radial-gradient(at 0% 0%, hsla(260,100%,20%,1) 0, transparent 50%), 
+            radial-gradient(at 50% 100%, hsla(280,100%,15%,1) 0, transparent 50%), 
+            radial-gradient(at 100% 0%, hsla(45,100%,15%,1) 0, transparent 50%);
+        background-attachment: fixed;
+    }
+    .card-glass { 
+        background: rgba(15, 23, 42, 0.7); 
+        backdrop-filter: blur(12px); 
+        border: 1px solid rgba(255, 215, 0, 0.15); /* Hint of gold border */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+    }
+    input, select, textarea { 
+        background-color: #0f172a !important; 
+        color: white !important; 
+        border: 1px solid #334155 !important; 
+    }
+    input:focus, select:focus, textarea:focus { 
+        border-color: #fbbf24 !important; /* Gold focus */
+        outline: none; 
+        box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3); 
+    }
+    /* Checkbox Custom */
+    .checkbox-wrapper input:checked + div {
+        background-color: #d97706; /* Amber */
+        border-color: #fbbf24;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-8 px-4 flex flex-col">
+
+  <div class="max-w-2xl mx-auto text-center mb-8">
+    
+    <div class="mb-4">
+      <img src="https://raw.githubusercontent.com/kamarul95-cloud/hostqamarul/refs/heads/main/logo%20logo%20pemuda%20pas.png" 
+           class="h-20 w-auto mx-auto object-contain hover:scale-105 transition duration-300 drop-shadow-2xl">
+    </div>
+
+    <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-600 drop-shadow-sm">
+      Iftar Pemuda
+    </h1>
+    
+    <p class="text-indigo-200 tracking-widest uppercase text-sm font-bold mt-2 border-b border-indigo-500/30 inline-block pb-1">
+      DUN Bukit Tunggal
+    </p>
+
+    <div class="mt-6 flex flex-col md:flex-row justify-center gap-3 text-xs font-mono text-amber-200 bg-black/40 border border-amber-500/20 py-3 px-5 rounded-xl mx-auto w-fit shadow-inner">
+        <span>📅 3 MAC 2026 (SELASA) / 13 RAMADAN</span> 
+        <span class="hidden md:inline text-slate-500">|</span> 
+        <span>📍 KEDAI IKAN BAKAR, STADIUM GONG BADAK</span>
+    </div>
+  </div>
+
+  <div class="max-w-xl mx-auto w-full flex-grow">
+
+    <form id="mainForm">
+      
+      <div class="card-glass p-6 rounded-2xl mb-6 border-t-2 border-amber-500">
+        <h3 class="text-amber-400 font-bold text-lg mb-4 flex items-center gap-2 uppercase tracking-wide">
+            <i class="fa-solid fa-user-pen"></i> Maklumat Pemuda
+        </h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="text-xs font-bold text-indigo-300 uppercase">Nama Penuh</label>
+            <input type="text" name="nama" class="w-full p-3 rounded-lg uppercase" required placeholder="SILA ISI NAMA PENUH">
+          </div>
+          
+          <div class="grid grid-cols-2 gap-3">
+             <div>
+                <label class="text-xs font-bold text-indigo-300 uppercase">No. K/P</label>
+                <input type="number" name="ic" id="icInput" class="w-full p-3 rounded-lg" required placeholder="Contoh: 900101111234">
+             </div>
+             <div>
+                <label class="text-xs font-bold text-indigo-300 uppercase">Umur</label>
+                <input type="number" name="umur" class="w-full p-3 rounded-lg" required>
+             </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+             <div>
+                <label class="text-xs font-bold text-indigo-300 uppercase">No. Telefon</label>
+                <input type="tel" name="tel" class="w-full p-3 rounded-lg" required placeholder="01X-XXXXXXX">
+             </div>
+             <div>
+                <label class="text-xs font-bold text-indigo-300 uppercase">Jantina</label>
+                <select name="jantina" class="w-full p-3 rounded-lg" required>
+                    <option value="Lelaki">Lelaki</option>
+                </select>
+             </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-indigo-300 uppercase">Cawangan</label>
+            <select name="cawangan" class="w-full p-3 rounded-lg uppercase" required>
+                <option value="">- PILIH CAWANGAN -</option>
+                <option value="BATU ENAM">BATU ENAM</option>
+                <option value="PAYA LIMA AMAS">PAYA LIMA AMAS</option>
+                <option value="TUAN MANDAK">TUAN MANDAK</option>
+                <option value="PENGKALAN ARANG">PENGKALAN ARANG</option>
+                <option value="TEBAUK">TEBAUK</option>
+                <option value="PAK KATAK">PAK KATAK</option>
+                <option value="TAMAN DESA JAYA">TAMAN DESA JAYA</option>
+                <option value="BANGGOL AIR LILIH">BANGGOL AIR LILIH</option>
+                <option value="BUKIT TUNGGAL">BUKIT TUNGGAL</option>
+                <option value="TAMAN BUKIT DATU">TAMAN BUKIT DATU</option>
+                <option value="BUKIT KANDIS">BUKIT KANDIS</option>
+                <option value="BUKIT DATU">BUKIT DATU</option>
+                <option value="SEB TUAN CHIK">SEB TUAN CHIK</option>
+                <option value="BUKIT TOK RIS">BUKIT TOK RIS</option>
+                <option value="SERDANG BARU">SERDANG BARU</option>
+                <option value="PAKR BUKIT TUNGGAL">PAKR BUKIT TUNGGAL</option>
+                <option value="GONG KIJANG">GONG KIJANG</option>
+                <option value="GONG SENTUL">GONG SENTUL</option>
+                <option value="PULAU KETAM">PULAU KETAM</option>
+                <option value="PULAU SEKATI">PULAU SEKATI</option>
+                <option value="DUYUNG BESAR">DUYUNG BESAR</option>
+                <option value="DUYUNG KECIL">DUYUNG KECIL</option>
+                <option value="DUYUNG WAN SU">DUYUNG WAN SU</option>
+                <option value="KELAB AYA">KELAB AYA</option>
+                <option value="BUKIT TUMBUH">BUKIT TUMBUH</option>
+                <option value="BANGGOL PAUH">BANGGOL PAUH</option>
+                <option value="SEBERANG BUKIT TUMBUH">SEBERANG BUKIT TUMBUH</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-glass p-4 rounded-xl mb-6 bg-indigo-950/50">
+        <h3 class="text-amber-400 font-bold text-sm uppercase mb-3 border-b border-indigo-800 pb-2">
+            🌙 Info Program Iftar
+        </h3>
+        <ul class="list-disc pl-5 text-xs text-indigo-200 space-y-2 leading-relaxed text-justify">
+            <li>Terbuka kepada semua Pemuda di dalam kawasan DUN Bukit Tunggal.</li>
+            <li>Harga kupon pendaftaran adalah <b>RM10.00</b> bagi setiap peserta.</li>
+            <li>Kupon digital (screenshot) <b>WAJIB</b> ditunjukkan di kaunter pendaftaran semasa hari kejadian.</li>
+            <li>Pakaian peserta mestilah menutup aurat, sopan, dan bersesuaian dengan majlis (Baju Melayu / Kopiah amat digalakkan).</li>
+            <li>Sila hadir awal ke lokasi program untuk kelancaran majlis berbuka puasa.</li>
+        </ul>
+        
+        <label class="checkbox-wrapper cursor-pointer flex items-start gap-3 mt-4 bg-indigo-900/40 p-3 rounded-lg border border-indigo-800/50">
+            <input type="checkbox" required class="peer sr-only">
+            <div class="w-5 h-5 border-2 border-indigo-400 rounded flex items-center justify-center transition mt-0.5">
+                <i class="fa-solid fa-check text-white text-xs opacity-0 peer-checked:opacity-100"></i>
+            </div>
+            <span class="text-xs text-indigo-100 font-semibold select-none">
+                Saya bersetuju untuk hadir dan mematuhi adab-adab majlis ilmu & berbuka puasa.
+            </span>
+        </label>
+      </div>
+      
+      <div class="card-glass p-6 rounded-2xl mb-8 border-t-2 border-slate-600 relative overflow-hidden">
+        <i class="fa-solid fa-mosque absolute -right-6 -bottom-6 text-indigo-500/10 text-9xl"></i>
+
+        <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2 relative z-10">
+            💳 Kupon Iftar: RM 10.00
+        </h3>
+        
+        <div class="grid grid-cols-2 gap-4 mb-4 relative z-10">
+           <label class="cursor-pointer">
+            <input type="radio" name="jenisBayaran" value="Cash" onchange="togglePayment('Cash')" required class="peer sr-only">
+            <div class="p-3 rounded-lg border border-slate-600 bg-slate-800 peer-checked:bg-amber-600 peer-checked:border-amber-400 peer-checked:text-white transition text-center font-semibold text-sm">💵 Tunai (Hadir)</div>
+          </label>
+           <label class="cursor-pointer">
+            <input type="radio" name="jenisBayaran" value="QR" onchange="togglePayment('QR')" required class="peer sr-only">
+            <div class="p-3 rounded-lg border border-slate-600 bg-slate-800 peer-checked:bg-indigo-600 peer-checked:border-indigo-400 peer-checked:text-white transition text-center font-semibold text-sm">📲 Transfer / QR</div>
+          </label>
+        </div>
+
+        <div id="qrContainer" class="hidden text-center bg-white p-4 rounded-xl animate-fade-in relative z-10">
+           <p class="text-slate-800 text-sm font-bold mb-2">Imbas & Bayar (RM10)</p>
+           
+           <img src="https://raw.githubusercontent.com/kamarul95-cloud/hostqamarul/refs/heads/main/qr%20ust%20sufi.jpeg" 
+                class="mx-auto w-40 h-auto border-4 border-slate-100 rounded-lg mb-3 shadow-md">
+           
+           <div class="text-left bg-slate-50 p-3 rounded border border-slate-200">
+             <label class="block text-xs font-bold text-slate-700 mb-1">📤 Upload Resit Transfer</label>
+             <input type="file" id="uploadFile" accept="image/*,application/pdf" class="w-full text-xs text-slate-500">
+           </div>
+        </div>
+
+        <button type="submit" id="btnSubmit" class="w-full mt-6 bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 text-white font-black py-4 rounded-xl shadow-[0_0_15px_rgba(245,158,11,0.5)] hover:brightness-110 transition transform active:scale-95 text-lg uppercase tracking-widest relative z-10">
+          SAHKAN KEHADIRAN
+        </button>
+      </div>
+
+    </form>
+    
+  </div>
+
+  <div class="max-w-xl mx-auto text-center mt-auto pb-10">
+    <p class="text-indigo-400 text-xs">
+        Sistem Pendaftaran Digital<br>
+        <span class="opacity-50 text-[10px] tracking-widest uppercase">
+            Developed by <span class="text-amber-400 font-bold">Qamar</span>
+        </span>
+    </p>
+  </div>
+
+  <script>
+    // ==========================================
+    // ⚠️ PASTE URL DEPLOYMENT ANDA DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvoGYbir8wKn6O2xyRPx1pEJ6lbL6-BJsZtf1Y3fw0uPztHIUD1xGjPmRu1wqky-Z2KA/exec"; 
+    // ==========================================
+
+    function togglePayment(type) {
+        const qr = document.getElementById('qrContainer');
+        const fileInput = document.getElementById('uploadFile');
+        if (type === 'QR') {
+            qr.classList.remove('hidden');
+            fileInput.setAttribute('required', 'true');
+        } else {
+            qr.classList.add('hidden');
+            fileInput.removeAttribute('required');
+        }
+    }
+
+    // SUBMIT FORM LOGIC
+    document.getElementById('mainForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById('btnSubmit');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SEDANG PROSES...';
+      btn.disabled = true;
+
+      var formData = new FormData(this);
+      var formObject = Object.fromEntries(formData.entries());
+      formObject.action = "submitForm";
+
+      // File handling
+      var fileInput = document.getElementById('uploadFile');
+      var filePromise = Promise.resolve(null); 
+      
+      if (fileInput.files.length > 0) {
+        filePromise = new Promise((resolve, reject) => {
+           var reader = new FileReader();
+           reader.onload = e => resolve({ name: fileInput.files[0].name, mimeType: fileInput.files[0].type, data: e.target.result });
+           reader.onerror = reject;
+           reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
+
+      filePromise.then(fileData => {
+        if(fileData) formObject.filesData = [fileData];
+
+        fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify(formObject)
+        })
+        .then(res => res.json())
+        .then(response => {
+           if(response.status === "success") {
+             
+             let namaPeserta = document.getElementsByName('nama')[0].value.toUpperCase();
+             let noKupon = response.noKupon;
+
+             // --- POPUP TIKET DIGITAL IFTAR ---
+             Swal.fire({
+               title: '✅ PENDAFTARAN BERJAYA!', 
+               html: `
+                <div class="space-y-4 mt-2">
+                    <p class="text-sm text-indigo-200">Alhamdulillah, kehadiran direkodkan.</p>
+                    
+                    <div class="relative bg-gradient-to-b from-indigo-900 to-[#0f172a] border-2 border-amber-500 rounded-2xl p-6 shadow-[0_0_30px_rgba(245,158,11,0.2)] overflow-hidden mx-auto max-w-[300px]">
+                        
+                        <i class="fa-solid fa-moon absolute top-4 right-4 text-amber-500/20 text-4xl"></i>
+                        
+                        <p class="text-[10px] text-amber-400 font-bold tracking-widest uppercase mb-1">No. Kupon Iftar</p>
+                        
+                        <h1 class="text-7xl font-black text-white tracking-tighter drop-shadow-md my-2">
+                            ${noKupon}
+                        </h1>
+                        
+                        <div class="border-t border-dashed border-indigo-500 my-3"></div>
+                        
+                        <p class="text-xs text-indigo-100 font-bold uppercase truncate px-2">
+                            ${namaPeserta}
+                        </p>
+                        <p class="text-[9px] text-indigo-300 mt-1">Iftar Pemuda DUN Bukit Tunggal</p>
+                    </div>
+
+                    <div class="bg-red-500/10 border border-red-500/50 p-4 rounded-xl animate-pulse mt-4">
+                        <p class="text-sm text-red-300 font-bold uppercase flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-camera"></i> Sila Screenshot Skrin Ini!
+                        </p>
+                        <p class="text-[10px] text-red-200/70 mt-1">
+                            Tunjuk kupon ini di meja pendaftaran kedai ikan bakar.
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-indigo-900/50">
+                        <p class="text-[10px] text-indigo-400 uppercase tracking-widest">
+                            Sistem dibangunkan oleh <span class="text-amber-400 font-bold">Qamar</span> 🚀
+                        </p>
+                    </div>
+                </div>
+               `,
+               confirmButtonText: 'Selesai & Refresh',
+               confirmButtonColor: '#d97706',
+               background: '#1e1b4b', 
+               color: '#fff',
+               allowOutsideClick: false
+             }).then(() => {
+                location.reload(); 
+             });
+           } else {
+             throw new Error(response.message);
+           }
+        })
+        .catch(err => {
+           btn.innerHTML = 'CUBA LAGI';
+           btn.disabled = false;
+           Swal.fire('Ralat', err.message, 'error');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
