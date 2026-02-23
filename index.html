@@ -284,33 +284,37 @@
 
              // Expose function download kepada window
              window.triggerPNGDownload = function(btnElement) {
-                 // Tukar butang jadi loading
                  let originalText = btnElement.innerHTML;
-                 btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sedang Menyimpan...';
+                 btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xl"></i> Menyimpan...';
                  btnElement.disabled = true;
 
-                 // Tangkap gambar elemen kad
-                 const captureElement = document.getElementById('invitationCard');
+                 // TAKTIK 1: Tunggu 500ms bagi animasi SweetAlert berhenti dan font loading habis
+                 setTimeout(function() {
+                     const captureElement = document.getElementById('invitationCard');
 
-                 html2canvas(captureElement, {
-                     scale: 3, 
-                     useCORS: true, 
-                     backgroundColor: '#1e1b4b'
-                 }).then(canvas => {
-                     const link = document.createElement('a');
-                     link.download = 'Kad_Iftar_Pemuda_' + noKupon + '.png';
-                     link.href = canvas.toDataURL('image/png');
-                     link.click();
-                     
-                     // Berjaya - Tukar warna butang ke hijau
-                     btnElement.innerHTML = '<i class="fa-solid fa-check text-xl"></i> Kad Berjaya Disimpan!';
-                     btnElement.classList.remove('from-amber-500', 'to-yellow-500', 'text-indigo-950');
-                     btnElement.classList.add('from-green-500', 'to-emerald-500', 'text-white');
-                 }).catch(err => {
-                     alert('Gagal: ' + err);
-                     btnElement.innerHTML = originalText;
-                     btnElement.disabled = false;
-                 });
+                     html2canvas(captureElement, {
+                         scale: 3, // HD Quality
+                         useCORS: true, 
+                         backgroundColor: '#1e1b4b',
+                         // TAKTIK 2: Kunci koordinat scroll supaya gambar tak terpotong
+                         scrollY: -window.scrollY, 
+                         windowWidth: document.documentElement.offsetWidth,
+                         windowHeight: document.documentElement.offsetHeight
+                     }).then(canvas => {
+                         const link = document.createElement('a');
+                         link.download = 'Kad_Iftar_Pemuda_' + noKupon + '.png';
+                         link.href = canvas.toDataURL('image/png');
+                         link.click();
+                         
+                         btnElement.innerHTML = '<i class="fa-solid fa-check text-xl"></i> Kad Disimpan!';
+                         btnElement.classList.remove('from-amber-500', 'to-yellow-500', 'text-indigo-950');
+                         btnElement.classList.add('from-green-500', 'to-emerald-500', 'text-white');
+                     }).catch(err => {
+                         alert('Gagal: ' + err);
+                         btnElement.innerHTML = originalText;
+                         btnElement.disabled = false;
+                     });
+                 }, 500); // 500ms delay yang sangat penting
              };
 
              // --- POPUP KAD JEMPUTAN RASMI (PNG) ---
@@ -320,28 +324,30 @@
                 <div class="space-y-4 mt-2">
                     <p class="text-sm text-indigo-200">Sila simpan Kad Jemputan rasmi ini.</p>
                     
-                    <div id="invitationCard" class="relative border-4 border-amber-500 rounded-2xl p-6 shadow-2xl overflow-hidden mx-auto max-w-md text-center" style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);">
+                    <div id="invitationCard" class="relative border-4 border-amber-500 rounded-2xl p-6 shadow-2xl mx-auto text-center" style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); width: 380px; box-sizing: border-box; overflow: hidden;">
                         
-                        <div class="absolute top-4 left-4 text-amber-500/40 text-4xl" style="font-family: serif;">☪</div>
+                        <div class="absolute top-4 left-4 text-amber-500/40" style="font-family: serif; font-size: 36px; line-height: 1;">☪</div>
 
-                        <p class="text-amber-400 font-bold text-sm tracking-[0.3em] uppercase mb-2">Undangan Rasmi</p>
-                        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight uppercase drop-shadow-lg leading-none mb-2" style="font-family: Arial, sans-serif;">
+                        <p class="text-amber-400 font-bold tracking-[0.3em] uppercase mb-2" style="font-size: 12px; margin-top: 5px;">Undangan Rasmi</p>
+                        
+                        <h1 class="font-black text-white uppercase drop-shadow-lg mb-2" style="font-family: Arial, sans-serif; font-size: 26px; line-height: 1.2;">
                             Iftar Pemuda<br>DUN Bukit Tunggal
                         </h1>
-                        <div class="inline-block bg-indigo-950 border border-amber-500/30 px-4 py-1 rounded-full mb-6">
-                            <p class="text-indigo-200 text-xs font-mono">3 MAC 2026 | 13 RAMADAN | STADIUM GONG BADAK</p>
+                        
+                        <div class="inline-block bg-indigo-950 border border-amber-500/30 px-3 py-1 rounded-full mb-6">
+                            <p class="text-indigo-200 font-mono" style="font-size: 10px;">3 MAC 2026 | 13 RAMADAN | STADIUM GONG BADAK</p>
                         </div>
 
                         <div class="bg-indigo-900/80 border-2 border-dashed border-amber-500 rounded-xl p-4 mb-6 relative z-10">
-                            <p class="text-xs text-amber-300 font-bold uppercase tracking-widest mb-1">No. Kupon Anda</p>
-                            <h2 class="text-7xl font-black text-white tracking-tighter" style="text-shadow: 0 2px 10px rgba(251,191,36,0.5);">
+                            <p class="text-amber-300 font-bold uppercase tracking-widest mb-1" style="font-size: 11px;">No. Kupon Anda</p>
+                            <h2 class="font-black text-white" style="font-size: 70px; line-height: 1; margin: 0; text-shadow: 0 2px 10px rgba(251,191,36,0.5);">
                                 ${noKupon}
                             </h2>
                         </div>
 
                         <div class="relative z-10 pb-2">
-                            <p class="text-lg font-bold text-white uppercase truncate">${namaPeserta}</p>
-                            <p class="text-sm text-indigo-300 uppercase tracking-wide">${cawanganPeserta}</p>
+                            <p class="font-bold text-white uppercase truncate" style="font-size: 16px; margin: 0;">${namaPeserta}</p>
+                            <p class="text-indigo-300 uppercase tracking-wide" style="font-size: 12px; margin-top: 4px;">${cawanganPeserta}</p>
                         </div>
                     </div>
 
@@ -356,12 +362,12 @@
                     </div>
                 </div>
                `,
-               confirmButtonText: 'Tutup Selesai',
+               confirmButtonText: 'Tutup & Selesai',
                confirmButtonColor: '#1e293b',
                background: '#1e1b4b', 
                color: '#fff',
                allowOutsideClick: false,
-               width: '600px'
+               width: 'auto'
              }).then(() => {
                 location.reload(); 
              });
