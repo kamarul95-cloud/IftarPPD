@@ -6,7 +6,7 @@
   <title>Iftar Pemuda DUN Bukit Tunggal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -42,6 +42,19 @@
     .checkbox-wrapper input:checked + div {
         background-color: #d97706; 
         border-color: #fbbf24;
+    }
+    /* CSS KHAS UNTUK KAD JEMPUTAN DALAM POPUP */
+    #invitationCard {
+        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    #invitationCard::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23fbbf24" fill-opacity="0.05"%3E%3Cpath d="M0 0h20L0 20z"/%3E%3C/g%3E%3C/svg%3E');
+        opacity: 0.5;
     }
   </style>
 </head>
@@ -150,7 +163,7 @@
         <ul class="list-disc pl-5 text-xs text-indigo-200 space-y-2 leading-relaxed text-justify">
             <li>Terbuka kepada semua Pemuda di dalam kawasan DUN Bukit Tunggal.</li>
             <li>Harga kupon pendaftaran adalah <b>RM10.00</b> bagi setiap peserta.</li>
-            <li>Kupon digital (screenshot/PDF) <b>WAJIB</b> ditunjukkan di kaunter pendaftaran semasa hari kejadian.</li>
+            <li>Kupon digital (Gambar/PNG) <b>WAJIB</b> ditunjukkan di kaunter pendaftaran semasa hari kejadian.</li>
             <li>Pakaian peserta mestilah menutup aurat, sopan, dan bersesuaian dengan majlis (Baju Melayu / Kopiah amat digalakkan).</li>
             <li>Sila hadir awal ke lokasi program untuk kelancaran majlis berbuka puasa.</li>
         </ul>
@@ -230,51 +243,37 @@
         }
     }
 
-    // FUNGSI JANA PDF KUPON (VERSI STABIL & HIGH QUALITY)
-    function generatePDF(nama, noKupon, cawangan) {
-        
-        // 1. Popup Loading Supaya User Tunggu Kejap
+    // FUNGSI JANA GAMBAR (PNG HD) DARI KAD JEMPUTAN
+    function downloadPNG(noKupon) {
+        // Tunjukkan Loading
         Swal.fire({
-            title: 'Menjana PDF...',
-            html: 'Sila tunggu sebentar, sedang siapkan kupon anda.',
+            title: 'Menjana Kad...',
+            html: 'Sila tunggu sebentar, sedang menyiapkan gambar kad anda.',
             didOpen: () => Swal.showLoading(),
-            background: '#1e1b4b',
-            color: '#fff',
-            allowOutsideClick: false
+            background: '#1e1b4b', color: '#fff', allowOutsideClick: false
         });
 
-        // 2. Bina Kod HTML Kupon (Guna warna Solid & Font Standard)
-        const pdfHTML = `
-            <div style="width: 800px; height: 450px; background-color: #1e1b4b; border: 15px solid #fbbf24; padding: 40px; box-sizing: border-box; font-family: Arial, sans-serif; text-align: center; color: white;">
-                
-                <p style="color: #fbbf24; font-size: 18px; font-weight: bold; letter-spacing: 5px; margin: 10px 0; text-transform: uppercase;">Undangan Rasmi</p>
-                <h1 style="color: white; font-size: 44px; font-weight: bold; margin: 10px 0; text-transform: uppercase;">Iftar Pemuda DUN Bukit Tunggal</h1>
-                <p style="color: #cbd5e1; font-size: 16px; margin-bottom: 30px;">3 MAC 2026 (13 RAMADAN) | KEDAI IKAN BAKAR, STADIUM GONG BADAK</p>
-                
-                <div style="border: 4px dashed #fbbf24; border-radius: 15px; padding: 20px; margin: 0 auto 30px auto; width: 60%; background-color: #312e81;">
-                    <p style="color: #fbbf24; font-size: 16px; margin: 0 0 10px 0; font-weight: bold; letter-spacing: 2px;">NOMBOR KUPON ANDA</p>
-                    <h2 style="color: white; font-size: 90px; font-weight: bold; margin: 0; line-height: 1;">${noKupon}</h2>
-                </div>
+        const captureElement = document.getElementById('invitationCard');
 
-                <p style="font-size: 28px; font-weight: bold; margin: 0; text-transform: uppercase;">${nama}</p>
-                <p style="font-size: 18px; margin: 10px 0 0 0; text-transform: uppercase; color: #94a3b8;">CAWANGAN: ${cawangan}</p>
-            </div>
-        `;
-
-        // 3. Setting Kualiti PDF
-        var opt = {
-            margin:       0,
-            filename:     'Kupon_Iftar_' + noKupon + '.pdf',
-            image:        { type: 'jpeg', quality: 1.0 },
-            html2canvas:  { scale: 2, backgroundColor: '#1e1b4b', useCORS: true }, // Paksa background biru gelap
-            jsPDF:        { unit: 'px', format: [800, 450], orientation: 'landscape' }
-        };
-
-        // 4. Proses & Download
-        html2pdf().set(opt).from(pdfHTML).save().then(() => {
-            Swal.close(); // Tutup loading bila dah siap download
+        html2canvas(captureElement, {
+            scale: 3, // Kualiti Tinggi (3x)
+            useCORS: true, 
+            backgroundColor: null, // Telus background
+        }).then(canvas => {
+            // Trigger Download
+            const link = document.createElement('a');
+            link.download = 'Kad_Iftar_Pemuda_' + noKupon + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            Swal.close(); // Tutup loading
+            // Tunjuk success kecil
+            Swal.fire({
+                icon: 'success', title: 'Siap!', text: 'Kad telah disimpan dalam galeri.',
+                timer: 2000, showConfirmButton: false, background: '#1e1b4b', color: '#fff'
+            });
         }).catch(err => {
-            Swal.fire('Ralat', 'Gagal generate PDF: ' + err, 'error');
+            Swal.fire('Ralat', 'Gagal generate gambar: ' + err, 'error');
         });
     }
 
@@ -313,56 +312,66 @@
         .then(response => {
            if(response.status === "success") {
              
-             // Ambil detail peserta untuk dipaparkan di PDF
              let namaPeserta = document.getElementsByName('nama')[0].value.toUpperCase();
              let cawanganPeserta = document.getElementsByName('cawangan')[0].value.toUpperCase();
              let noKupon = response.noKupon;
 
-             // Expose function download kepada popup (Supaya butang dlm Swal boleh pakai fungsi ni)
-             window.triggerPDFDownload = function() {
-                 generatePDF(namaPeserta, noKupon, cawanganPeserta);
+             // Expose function download kepada window
+             window.triggerPNGDownload = function() {
+                 downloadPNG(noKupon);
              };
 
-             // --- POPUP TIKET DIGITAL IFTAR ---
+             // --- POPUP KAD JEMPUTAN RASMI (PNG) ---
              Swal.fire({
-               title: '✅ PENDAFTARAN BERJAYA!', 
+               title: '✅ PENDAFTARAN BERJAYA!',
+               // HTML di bawah ini adalah DESIGN KAD JEMPUTAN yang akan di-capture
                html: `
                 <div class="space-y-4 mt-2">
-                    <p class="text-sm text-indigo-200">Alhamdulillah, kehadiran direkodkan.</p>
+                    <p class="text-sm text-indigo-200">Sila simpan Kad Jemputan rasmi ini.</p>
                     
-                    <div class="relative bg-gradient-to-b from-indigo-900 to-[#0f172a] border-2 border-amber-500 rounded-2xl p-6 shadow-[0_0_30px_rgba(245,158,11,0.2)] overflow-hidden mx-auto max-w-[300px]">
-                        <i class="fa-solid fa-moon absolute top-4 right-4 text-amber-500/20 text-4xl"></i>
-                        <p class="text-[10px] text-amber-400 font-bold tracking-widest uppercase mb-1">No. Kupon Iftar</p>
-                        <h1 class="text-7xl font-black text-white tracking-tighter drop-shadow-md my-2">
-                            ${noKupon}
+                    <div id="invitationCard" class="relative border-4 border-amber-500 rounded-2xl p-6 shadow-2xl overflow-hidden mx-auto max-w-md text-center">
+                        
+                        <i class="fa-solid fa-star-and-crescent absolute top-4 left-4 text-amber-500/30 text-3xl animate-pulse"></i>
+                        <i class="fa-solid fa-mosque absolute bottom-2 right-2 text-indigo-500/20 text-8xl"></i>
+
+                        <p class="text-amber-400 font-bold text-sm tracking-[0.3em] uppercase mb-2">Undangan Rasmi</p>
+                        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight uppercase drop-shadow-lg leading-none mb-2">
+                            Iftar Pemuda<br>DUN Bukit Tunggal
                         </h1>
-                        <div class="border-t border-dashed border-indigo-500 my-3"></div>
-                        <p class="text-xs text-indigo-100 font-bold uppercase truncate px-2">${namaPeserta}</p>
-                        <p class="text-[9px] text-indigo-300 mt-1">Cawangan: ${cawanganPeserta}</p>
+                        <div class="inline-block bg-indigo-950/60 border border-amber-500/30 px-4 py-1 rounded-full mb-6">
+                            <p class="text-indigo-200 text-xs font-mono">3 MAC 2026 | 13 RAMADAN | STADIUM GONG BADAK</p>
+                        </div>
+
+                        <div class="bg-indigo-900/80 border-2 border-dashed border-amber-500 rounded-xl p-4 mb-6 relative z-10">
+                            <p class="text-xs text-amber-300 font-bold uppercase tracking-widest mb-1">No. Kupon Anda</p>
+                            <h2 class="text-7xl font-black text-white tracking-tighter drop-shadow-[0_2px_10px_rgba(251,191,36,0.5)]">
+                                ${noKupon}
+                            </h2>
+                        </div>
+
+                        <div class="relative z-10">
+                            <p class="text-lg font-bold text-white uppercase truncate">${namaPeserta}</p>
+                            <p class="text-sm text-indigo-300 uppercase tracking-wide">${cawanganPeserta}</p>
+                        </div>
                     </div>
 
                     <div class="bg-indigo-900/40 border border-indigo-500/30 p-4 rounded-xl mt-4">
-                        <p class="text-[11px] text-indigo-200 mb-3">
-                            Sila <b>Screenshot</b> skrin ini atau <b>Muat Turun PDF</b> untuk dijadikan bukti kehadiran di meja urusetia nanti.
+                        <p class="text-[11px] text-indigo-200 mb-3 leading-relaxed">
+                            Kad ini adalah bukti kehadiran rasmi. Sila muat turun dan tunjukkan kepada urusetia bertugas.
                         </p>
                         
-                        <button onclick="window.triggerPDFDownload()" class="w-full bg-amber-500 hover:bg-amber-400 text-indigo-950 font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition active:scale-95 shadow-lg">
-                            <i class="fa-solid fa-file-pdf text-xl"></i> Muat Turun Kupon (PDF)
+                        <button onclick="window.triggerPNGDownload()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-indigo-950 font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition active:scale-95 shadow-[0_5px_15px_rgba(245,158,11,0.4)]">
+                            <i class="fa-solid fa-image text-xl"></i> Muat Turun Kad (PNG HD)
                         </button>
-                    </div>
-
-                    <div class="mt-4 pt-4 border-t border-indigo-900/50">
-                        <p class="text-[10px] text-indigo-400 uppercase tracking-widest">
-                            Sistem dibangunkan oleh <span class="text-amber-400 font-bold">Qamar</span> 🚀
-                        </p>
                     </div>
                 </div>
                `,
-               confirmButtonText: 'Tutup & Refresh',
-               confirmButtonColor: '#1e293b', // Warna gelap sikit untuk bezakan dgn butang PDF
+               confirmButtonText: 'Tutup',
+               confirmButtonColor: '#1e293b',
                background: '#1e1b4b', 
                color: '#fff',
-               allowOutsideClick: false
+               allowOutsideClick: false,
+               width: '600px' // Lebarkan popup sikit supaya kad nampak gah
              }).then(() => {
                 location.reload(); 
              });
