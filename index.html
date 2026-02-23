@@ -6,21 +6,16 @@
   <title>Iftar Pemuda DUN Bukit Tunggal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    
   <style>
-    /* Vibe Malam Ramadan: Ungu Gelap & Emas */
     body { 
         font-family: 'Inter', sans-serif; 
-        background-color: #1e1b4b; /* Deep Indigo */
+        background-color: #1e1b4b; 
         color: #f8fafc; 
-        background-image: 
-            radial-gradient(at 0% 0%, hsla(260,100%,20%,1) 0, transparent 50%), 
-            radial-gradient(at 50% 100%, hsla(280,100%,15%,1) 0, transparent 50%), 
-            radial-gradient(at 100% 0%, hsla(45,100%,15%,1) 0, transparent 50%);
+        background-image: radial-gradient(at 0% 0%, hsla(260,100%,20%,1) 0, transparent 50%), radial-gradient(at 50% 100%, hsla(280,100%,15%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(45,100%,15%,1) 0, transparent 50%);
         background-attachment: fixed;
     }
     .card-glass { 
@@ -43,78 +38,79 @@
         background-color: #d97706; 
         border-color: #fbbf24;
     }
-    /* CSS KHAS UNTUK KAD JEMPUTAN DALAM POPUP */
-    #invitationCard {
-        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
-        position: relative;
-        overflow: hidden;
-    }
-    #invitationCard::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23fbbf24" fill-opacity="0.05"%3E%3Cpath d="M0 0h20L0 20z"/%3E%3C/g%3E%3C/svg%3E');
-        opacity: 0.5;
-    }
   </style>
 </head>
 <body class="min-h-screen py-8 px-4 flex flex-col">
 
   <div class="max-w-2xl mx-auto text-center mb-8">
     <div class="mb-4">
-      <img src="https://raw.githubusercontent.com/kamarul95-cloud/hostqamarul/refs/heads/main/logo%20logo%20pemuda%20pas.png" 
-           class="h-20 w-auto mx-auto object-contain hover:scale-105 transition duration-300 drop-shadow-2xl">
+      <img src="https://raw.githubusercontent.com/kamarul95-cloud/hostqamarul/refs/heads/main/logo%20logo%20pemuda%20pas.png" class="h-20 w-auto mx-auto object-contain drop-shadow-2xl">
     </div>
-
     <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-600 drop-shadow-sm">
       Iftar Pemuda
     </h1>
-    
-    <p class="text-indigo-200 tracking-widest uppercase text-sm font-bold mt-2 border-b border-indigo-500/30 inline-block pb-1">
-      DUN Bukit Tunggal
-    </p>
-
+    <p class="text-indigo-200 tracking-widest uppercase text-sm font-bold mt-2 border-b border-indigo-500/30 inline-block pb-1">DUN Bukit Tunggal</p>
     <div class="mt-6 flex flex-col md:flex-row justify-center gap-3 text-xs font-mono text-amber-200 bg-black/40 border border-amber-500/20 py-3 px-5 rounded-xl mx-auto w-fit shadow-inner">
         <span>📅 3 MAC 2026 (SELASA) / 13 RAMADAN</span> 
         <span class="hidden md:inline text-slate-500">|</span> 
-        <span>📍 KEDAI IKAN BAKAR, STADIUM GONG BADAK</span>
+        <span>📍 STADIUM GONG BADAK</span>
     </div>
   </div>
 
   <div class="max-w-xl mx-auto w-full flex-grow">
 
+    <div class="card-glass p-5 rounded-xl mb-6 border-l-4 border-amber-500 bg-indigo-950/80">
+      <h3 class="text-amber-400 font-bold text-sm uppercase mb-3 flex items-center gap-2">
+        <i class="fa-solid fa-magnifying-glass"></i> Pernah Join Program Pemuda? Semak Sini
+      </h3>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input type="number" id="searchIC" placeholder="Masukkan No. IC (Tanpa -)" class="w-full p-3 rounded-lg text-sm font-mono tracking-widest">
+        <button onclick="checkMemberDB()" type="button" class="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white px-6 py-3 rounded-lg font-bold text-sm uppercase whitespace-nowrap shadow-lg">
+            Semak Rekod
+        </button>
+      </div>
+      <p class="text-xs text-indigo-300 mt-2 opacity-80">*Borang di bawah akan diisi secara automatik jika rekod anda dijumpai.</p>
+    </div>
+
     <form id="mainForm">
       
-      <div class="card-glass p-6 rounded-2xl mb-6 border-t-2 border-amber-500">
+      <div class="card-glass p-6 rounded-2xl mb-6 border-t-2 border-amber-500 relative">
+        
+        <div id="formOverlay" class="hidden absolute inset-0 bg-slate-900/80 backdrop-blur-sm z-20 rounded-2xl flex items-center justify-center">
+            <div class="text-amber-400 font-bold flex flex-col items-center">
+                <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i> Sedang Menyemak...
+            </div>
+        </div>
+
         <h3 class="text-amber-400 font-bold text-lg mb-4 flex items-center gap-2 uppercase tracking-wide">
             <i class="fa-solid fa-user-pen"></i> Maklumat Pemuda
         </h3>
         
-        <div class="space-y-4">
+        <div class="space-y-4 relative z-10">
           <div>
             <label class="text-xs font-bold text-indigo-300 uppercase">Nama Penuh</label>
-            <input type="text" name="nama" class="w-full p-3 rounded-lg uppercase" required placeholder="SILA ISI NAMA PENUH">
+            <input type="text" id="inputNama" name="nama" class="w-full p-3 rounded-lg uppercase" required placeholder="SILA ISI NAMA PENUH">
           </div>
           
           <div class="grid grid-cols-2 gap-3">
              <div>
                 <label class="text-xs font-bold text-indigo-300 uppercase">No. K/P</label>
-                <input type="number" name="ic" id="icInput" class="w-full p-3 rounded-lg" required placeholder="Contoh: 900101111234">
+                <input type="number" id="inputIC" name="ic" class="w-full p-3 rounded-lg" required placeholder="Contoh: 900101111234">
              </div>
              <div>
                 <label class="text-xs font-bold text-indigo-300 uppercase">Umur</label>
-                <input type="number" name="umur" class="w-full p-3 rounded-lg" required>
+                <input type="number" id="inputUmur" name="umur" class="w-full p-3 rounded-lg" required>
              </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
              <div>
                 <label class="text-xs font-bold text-indigo-300 uppercase">No. Telefon</label>
-                <input type="tel" name="tel" class="w-full p-3 rounded-lg" required placeholder="01X-XXXXXXX">
+                <input type="tel" id="inputTel" name="tel" class="w-full p-3 rounded-lg" required placeholder="01X-XXXXXXX">
              </div>
              <div>
                 <label class="text-xs font-bold text-indigo-300 uppercase">Jantina</label>
-                <select name="jantina" class="w-full p-3 rounded-lg" required>
+                <select id="inputJantina" name="jantina" class="w-full p-3 rounded-lg" required>
                     <option value="Lelaki">Lelaki</option>
                 </select>
              </div>
@@ -122,7 +118,7 @@
 
           <div>
             <label class="text-xs font-bold text-indigo-300 uppercase">Cawangan</label>
-            <select name="cawangan" class="w-full p-3 rounded-lg uppercase" required>
+            <select id="inputCawangan" name="cawangan" class="w-full p-3 rounded-lg uppercase" required>
                 <option value="">- PILIH CAWANGAN -</option>
                 <option value="BATU ENAM">BATU ENAM</option>
                 <option value="PAYA LIMA AMAS">PAYA LIMA AMAS</option>
@@ -157,35 +153,24 @@
       </div>
 
       <div class="card-glass p-4 rounded-xl mb-6 bg-indigo-950/50">
-        <h3 class="text-amber-400 font-bold text-sm uppercase mb-3 border-b border-indigo-800 pb-2">
-            🌙 Info Program Iftar
-        </h3>
+        <h3 class="text-amber-400 font-bold text-sm uppercase mb-3 border-b border-indigo-800 pb-2">🌙 Info Program Iftar</h3>
         <ul class="list-disc pl-5 text-xs text-indigo-200 space-y-2 leading-relaxed text-justify">
-            <li>Terbuka kepada semua Pemuda di dalam kawasan DUN Bukit Tunggal.</li>
+            <li>Terbuka kepada semua Pemuda DUN Bukit Tunggal.</li>
             <li>Harga kupon pendaftaran adalah <b>RM10.00</b> bagi setiap peserta.</li>
             <li>Kupon digital (Gambar/PNG) <b>WAJIB</b> ditunjukkan di kaunter pendaftaran semasa hari kejadian.</li>
-            <li>Pakaian peserta mestilah menutup aurat, sopan, dan bersesuaian dengan majlis (Baju Melayu / Kopiah amat digalakkan).</li>
-            <li>Sila hadir awal ke lokasi program untuk kelancaran majlis berbuka puasa.</li>
         </ul>
-        
         <label class="checkbox-wrapper cursor-pointer flex items-start gap-3 mt-4 bg-indigo-900/40 p-3 rounded-lg border border-indigo-800/50">
             <input type="checkbox" required class="peer sr-only">
             <div class="w-5 h-5 border-2 border-indigo-400 rounded flex items-center justify-center transition mt-0.5">
                 <i class="fa-solid fa-check text-white text-xs opacity-0 peer-checked:opacity-100"></i>
             </div>
-            <span class="text-xs text-indigo-100 font-semibold select-none">
-                Saya bersetuju untuk hadir dan mematuhi adab-adab majlis ilmu & berbuka puasa.
-            </span>
+            <span class="text-xs text-indigo-100 font-semibold select-none">Saya bersetuju untuk hadir dan mematuhi adab majlis.</span>
         </label>
       </div>
       
       <div class="card-glass p-6 rounded-2xl mb-8 border-t-2 border-slate-600 relative overflow-hidden">
         <i class="fa-solid fa-mosque absolute -right-6 -bottom-6 text-indigo-500/10 text-9xl"></i>
-
-        <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2 relative z-10">
-            💳 Kupon Iftar: RM 10.00
-        </h3>
-        
+        <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2 relative z-10">💳 Kupon Iftar: RM 10.00</h3>
         <div class="grid grid-cols-2 gap-4 mb-4 relative z-10">
            <label class="cursor-pointer">
             <input type="radio" name="jenisBayaran" value="Cash" onchange="togglePayment('Cash')" required class="peer sr-only">
@@ -197,11 +182,9 @@
           </label>
         </div>
 
-        <div id="qrContainer" class="hidden text-center bg-white p-4 rounded-xl animate-fade-in relative z-10">
+        <div id="qrContainer" class="hidden text-center bg-white p-4 rounded-xl relative z-10">
            <p class="text-slate-800 text-sm font-bold mb-2">Imbas & Bayar (RM10)</p>
-           <img src="https://raw.githubusercontent.com/kamarul95-cloud/hostqamarul/refs/heads/main/qr%20ust%20sufi.jpeg" 
-                class="mx-auto w-40 h-auto border-4 border-slate-100 rounded-lg mb-3 shadow-md">
-           
+           <img src="https://raw.githubusercontent.com/kamarul95-cloud/hostqamarul/refs/heads/main/qr%20ust%20sufi.jpeg" class="mx-auto w-40 h-auto border-4 border-slate-100 rounded-lg mb-3 shadow-md">
            <div class="text-left bg-slate-50 p-3 rounded border border-slate-200">
              <label class="block text-xs font-bold text-slate-700 mb-1">📤 Upload Resit Transfer</label>
              <input type="file" id="uploadFile" accept="image/*,application/pdf" class="w-full text-xs text-slate-500">
@@ -216,105 +199,97 @@
     </form>
   </div>
 
-  <div class="max-w-xl mx-auto text-center mt-auto pb-10">
-    <p class="text-indigo-400 text-xs">
-        Sistem Pendaftaran Digital<br>
-        <span class="opacity-50 text-[10px] tracking-widest uppercase">
-            Developed by <span class="text-amber-400 font-bold">Qamar</span>
-        </span>
-    </p>
-  </div>
-
   <script>
     // ==========================================
-    // ⚠️ PASTE URL DEPLOYMENT ANDA DI SINI
+    // ⚠️ PASTE URL DEPLOYMENT ANDA DI SINI (MESTI BUAT DEPLOYMENT BARU)
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyE2ZP356tZ2Xk7k7Fm3PX6qHZiKYUj1B_6g-IEf4EbrphdOVDkLnnJQeXYwR4RTLcvoA/exec"; 
     // ==========================================
 
     function togglePayment(type) {
         const qr = document.getElementById('qrContainer');
         const fileInput = document.getElementById('uploadFile');
-        if (type === 'QR') {
-            qr.classList.remove('hidden');
-            fileInput.setAttribute('required', 'true');
-        } else {
-            qr.classList.add('hidden');
-            fileInput.removeAttribute('required');
-        }
+        if (type === 'QR') { qr.classList.remove('hidden'); fileInput.setAttribute('required', 'true'); } 
+        else { qr.classList.add('hidden'); fileInput.removeAttribute('required'); }
     }
 
-    // FUNGSI MELUKIS FAIL GAMBAR ASLI (NATIVE CANVAS)
+    // 🔍 FUNGSI SEMAK DATABASE LAMA
+    function checkMemberDB() {
+      let icVal = document.getElementById('searchIC').value; 
+      if(!icVal) return Swal.fire({toast:true, position:'top-end', icon:'warning', title:'Masukkan No. IC', showConfirmButton: false, timer: 2000, background:'#1e293b', color:'#fff'});
+
+      document.getElementById('formOverlay').classList.remove('hidden');
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: "searchMember", ic: icVal })
+      })
+      .then(res => res.json())
+      .then(result => {
+        document.getElementById('formOverlay').classList.add('hidden');
+        
+        if(result.found) {
+            // Auto fill fields
+            document.getElementById('inputNama').value = result.nama;
+            document.getElementById('inputIC').value = icVal; // Guna IC carian
+            document.getElementById('inputTel').value = result.tel;
+            
+            // Umur (Boleh kosong kalau DB lama takde)
+            if(result.umur) document.getElementById('inputUmur').value = result.umur; 
+            
+            // Cawangan Dropdown
+            if(result.cawangan) {
+                let selectCawangan = document.getElementById('inputCawangan');
+                // Set value dropdown (Pastikan string sama exact match)
+                for(let i=0; i<selectCawangan.options.length; i++) {
+                    if(selectCawangan.options[i].value === result.cawangan.toUpperCase()) {
+                        selectCawangan.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            
+            Swal.fire({toast:true, position:'top-end', icon:'success', title: 'Data Dijumpai & Diisi!', timer: 2500, showConfirmButton: false, background:'#1e293b', color:'#fff'});
+        } else {
+            Swal.fire({toast:true, position:'top-end', icon:'error', title: 'Rekod Tidak Dijumpai', timer: 2500, showConfirmButton: false, background:'#1e293b', color:'#fff'});
+        }
+      })
+      .catch(err => {
+          document.getElementById('formOverlay').classList.add('hidden');
+          Swal.fire('Ralat Sistem', 'Sila cuba lagi.', 'error');
+      });
+    }
+
+    // FUNGSI LUKIS KAD (CANVAS NATIVE)
     function generateTrueImage(nama, noKupon, cawangan) {
-        // Cipta kanvas (kertas lukisan maya) bersaiz HD
         const canvas = document.createElement('canvas');
-        canvas.width = 800;
-        canvas.height = 1000;
+        canvas.width = 800; canvas.height = 1000;
         const ctx = canvas.getContext('2d');
 
-        // 1. Warna Background (Deep Indigo)
-        ctx.fillStyle = '#1e1b4b';
-        ctx.fillRect(0, 0, 800, 1000);
-
-        // 2. Bingkai Emas (Border)
-        ctx.strokeStyle = '#fbbf24';
-        ctx.lineWidth = 15;
-        ctx.strokeRect(30, 30, 740, 940);
-
+        ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, 800, 1000);
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 15; ctx.strokeRect(30, 30, 740, 940);
         ctx.textAlign = 'center';
 
-        // 3. Teks Header
-        ctx.fillStyle = '#fbbf24';
-        ctx.font = 'bold 24px Arial';
-        ctx.fillText('UNDANGAN RASMI', 400, 130);
+        ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 24px Arial'; ctx.fillText('UNDANGAN RASMI', 400, 130);
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 55px Arial'; ctx.fillText('IFTAR PEMUDA', 400, 210);
+        ctx.font = 'bold 45px Arial'; ctx.fillText('DUN BUKIT TUNGGAL', 400, 270);
+        ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 20px Arial'; ctx.fillText('3 MAC 2026  |  13 RAMADAN  |  STADIUM GONG BADAK', 400, 360);
 
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 55px Arial';
-        ctx.fillText('IFTAR PEMUDA', 400, 210);
-        ctx.font = 'bold 45px Arial';
-        ctx.fillText('DUN BUKIT TUNGGAL', 400, 270);
+        ctx.setLineDash([15, 15]); ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5; ctx.strokeRect(150, 450, 500, 260); ctx.setLineDash([]);
+        ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 26px Arial'; ctx.fillText('NO. KUPON ANDA', 400, 510);
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 160px Arial'; ctx.fillText(noKupon, 400, 660);
 
-        // 4. Info Tarikh
-        ctx.fillStyle = '#cbd5e1'; // Slate-300
-        ctx.font = 'bold 20px Arial';
-        ctx.fillText('3 MAC 2026  |  13 RAMADAN  |  STADIUM GONG BADAK', 400, 360);
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 35px Arial'; ctx.fillText(nama, 400, 830, 700);
+        ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 25px Arial'; ctx.fillText(cawangan, 400, 880, 700);
 
-        // 5. Kotak Nombor Kupon (Garis Putus-putus Emas)
-        ctx.setLineDash([15, 15]);
-        ctx.strokeStyle = '#fbbf24';
-        ctx.lineWidth = 5;
-        ctx.strokeRect(150, 450, 500, 260);
-        ctx.setLineDash([]); // Reset line dash
-
-        // 6. Isi Kotak Kupon
-        ctx.fillStyle = '#fbbf24';
-        ctx.font = 'bold 26px Arial';
-        ctx.fillText('NO. KUPON ANDA', 400, 510);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 160px Arial';
-        ctx.fillText(noKupon, 400, 660);
-
-        // 7. Nama & Cawangan Peserta (Bawah)
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 35px Arial';
-        // Auto-kecilkan tulisan kalau nama panjang sangat (Max width 700px)
-        ctx.fillText(nama, 400, 830, 700);
-
-        ctx.fillStyle = '#94a3b8'; // Slate-400
-        ctx.font = 'bold 25px Arial';
-        ctx.fillText(cawangan, 400, 880, 700);
-
-        // Tukar lukisan jadi fail gambar sebenar (Base64)
         return canvas.toDataURL('image/png');
     }
 
-    // SUBMIT FORM LOGIC
+    // SUBMIT FORM
     document.getElementById('mainForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
       const btnSubmit = document.getElementById('btnSubmit');
-      btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SEDANG PROSES...';
-      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SEDANG PROSES...'; btnSubmit.disabled = true;
 
       var formData = new FormData(this);
       var formObject = Object.fromEntries(formData.entries());
@@ -327,61 +302,39 @@
         filePromise = new Promise((resolve, reject) => {
            var reader = new FileReader();
            reader.onload = e => resolve({ name: fileInput.files[0].name, mimeType: fileInput.files[0].type, data: e.target.result });
-           reader.onerror = reject;
-           reader.readAsDataURL(fileInput.files[0]);
+           reader.onerror = reject; reader.readAsDataURL(fileInput.files[0]);
         });
       }
 
       filePromise.then(fileData => {
         if(fileData) formObject.filesData = [fileData];
-
-        fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify(formObject)
-        })
+        fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(formObject) })
         .then(res => res.json())
         .then(response => {
            if(response.status === "success") {
-             
              let namaPeserta = document.getElementsByName('nama')[0].value.toUpperCase();
              let cawanganPeserta = document.getElementsByName('cawangan')[0].value.toUpperCase();
              let noKupon = response.noKupon;
-
-             // JANA GAMBAR ASLI TERUS (Fail PNG Sebenar)
              let imageURL = generateTrueImage(namaPeserta, noKupon, cawanganPeserta);
 
-             // --- POPUP TAYANG GAMBAR ASLI ---
              Swal.fire({
-               title: '✅ PENDAFTARAN BERJAYA!',
+               title: '✅ BERJAYA!',
                html: `
                 <div class="space-y-4 mt-2">
-                    <p class="text-sm text-indigo-200">Kehadiran direkodkan. Sila muat turun Kad Jemputan anda.</p>
-                    
+                    <p class="text-sm text-indigo-200">Sila muat turun Kad Jemputan anda.</p>
                     <img src="${imageURL}" alt="Kad Iftar" class="w-full rounded-xl border-4 border-amber-500 shadow-2xl mx-auto block max-w-[320px]">
-
-                    <a href="${imageURL}" download="Kad_Iftar_Pemuda_${noKupon}.png" class="w-full mt-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-indigo-950 font-black py-4 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-lg no-underline cursor-pointer block">
-                        <i class="fa-solid fa-download text-xl"></i> Muat Turun Kad (PNG)
+                    <a href="${imageURL}" download="Kad_Iftar_Pemuda_${noKupon}.png" class="w-full mt-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-indigo-950 font-black py-4 px-4 rounded-xl flex items-center justify-center gap-2 no-underline">
+                        <i class="fa-solid fa-download text-xl"></i> Muat Turun Kad
                     </a>
                 </div>
                `,
-               confirmButtonText: 'Tutup & Selesai',
-               confirmButtonColor: '#1e293b',
-               background: '#1e1b4b', 
-               color: '#fff',
-               allowOutsideClick: false,
-             }).then(() => {
-                location.reload(); 
-             });
-           } else {
-             throw new Error(response.message);
-           }
+               confirmButtonText: 'Tutup & Selesai', confirmButtonColor: '#1e293b', background: '#1e1b4b', color: '#fff', allowOutsideClick: false,
+             }).then(() => { location.reload(); });
+           } else { throw new Error(response.message); }
         })
-        .catch(err => {
-           btnSubmit.innerHTML = 'SAHKAN KEHADIRAN';
-           btnSubmit.disabled = false;
-           Swal.fire('Ralat', err.message, 'error');
-        });
+        .catch(err => { btnSubmit.innerHTML = 'SAHKAN KEHADIRAN'; btnSubmit.disabled = false; Swal.fire('Ralat', err.message, 'error'); });
       });
     });
   </script>
+</body>
 </html>
