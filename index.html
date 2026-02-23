@@ -230,55 +230,51 @@
         }
     }
 
-    // FUNGSI JANA PDF KUPON (FULL CUSTOM VIBE)
+    // FUNGSI JANA PDF KUPON (VERSI STABIL & HIGH QUALITY)
     function generatePDF(nama, noKupon, cawangan) {
-        // Bina design PDF "Invisible" di belakang tabir
-        const pdfContainer = document.createElement('div');
         
-        // Vibe PDF: Tiket eksklusif, melintang (landscape), warna dark indigo & gold
-        pdfContainer.innerHTML = `
-            <div id="pdf-content" style="width: 800px; height: 450px; background: linear-gradient(135deg, #1e1b4b, #0f172a); border: 8px solid #fbbf24; padding: 40px; color: white; font-family: 'Inter', sans-serif; position: relative; box-sizing: border-box;">
-                
-                <div style="position: absolute; top: 20px; right: 20px; color: rgba(251, 191, 36, 0.2); font-size: 150px; line-height: 1;">
-                    ☪
-                </div>
-                
-                <div style="text-align: center; position: relative; z-index: 10;">
-                    <p style="color: #fbbf24; font-size: 16px; font-weight: bold; letter-spacing: 5px; margin: 0; text-transform: uppercase;">Undangan Rasmi</p>
-                    <h1 style="color: white; font-size: 38px; font-weight: 900; margin: 10px 0; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Iftar Pemuda DUN Bukit Tunggal</h1>
-                    <p style="color: #cbd5e1; font-size: 16px; margin-bottom: 30px;">3 MAC 2026 (13 RAMADAN) | KEDAI IKAN BAKAR, STADIUM GONG BADAK</p>
-                    
-                    <div style="background: rgba(255, 255, 255, 0.05); border: 2px dashed #fbbf24; border-radius: 15px; padding: 20px; margin: 0 auto 30px auto; width: 60%;">
-                        <p style="color: #fbbf24; font-size: 14px; margin: 0 0 5px 0; font-weight: bold; letter-spacing: 2px;">NOMBOR KUPON ANDA</p>
-                        <h2 style="color: white; font-size: 85px; font-weight: 900; margin: 0; line-height: 1;">${noKupon}</h2>
-                    </div>
+        // 1. Popup Loading Supaya User Tunggu Kejap
+        Swal.fire({
+            title: 'Menjana PDF...',
+            html: 'Sila tunggu sebentar, sedang siapkan kupon anda.',
+            didOpen: () => Swal.showLoading(),
+            background: '#1e1b4b',
+            color: '#fff',
+            allowOutsideClick: false
+        });
 
-                    <p style="font-size: 26px; font-weight: bold; margin: 0; text-transform: uppercase; color: #f8fafc;">${nama}</p>
-                    <p style="font-size: 16px; font-weight: 500; margin: 5px 0 0 0; text-transform: uppercase; color: #94a3b8;">CAWANGAN: ${cawangan}</p>
+        // 2. Bina Kod HTML Kupon (Guna warna Solid & Font Standard)
+        const pdfHTML = `
+            <div style="width: 800px; height: 450px; background-color: #1e1b4b; border: 15px solid #fbbf24; padding: 40px; box-sizing: border-box; font-family: Arial, sans-serif; text-align: center; color: white;">
+                
+                <p style="color: #fbbf24; font-size: 18px; font-weight: bold; letter-spacing: 5px; margin: 10px 0; text-transform: uppercase;">Undangan Rasmi</p>
+                <h1 style="color: white; font-size: 44px; font-weight: bold; margin: 10px 0; text-transform: uppercase;">Iftar Pemuda DUN Bukit Tunggal</h1>
+                <p style="color: #cbd5e1; font-size: 16px; margin-bottom: 30px;">3 MAC 2026 (13 RAMADAN) | KEDAI IKAN BAKAR, STADIUM GONG BADAK</p>
+                
+                <div style="border: 4px dashed #fbbf24; border-radius: 15px; padding: 20px; margin: 0 auto 30px auto; width: 60%; background-color: #312e81;">
+                    <p style="color: #fbbf24; font-size: 16px; margin: 0 0 10px 0; font-weight: bold; letter-spacing: 2px;">NOMBOR KUPON ANDA</p>
+                    <h2 style="color: white; font-size: 90px; font-weight: bold; margin: 0; line-height: 1;">${noKupon}</h2>
                 </div>
 
-                <div style="position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center;">
-                    <p style="color: #64748b; font-size: 12px; margin: 0;">Sila pamerkan kupon ini semasa pendaftaran.</p>
-                </div>
+                <p style="font-size: 28px; font-weight: bold; margin: 0; text-transform: uppercase;">${nama}</p>
+                <p style="font-size: 18px; margin: 10px 0 0 0; text-transform: uppercase; color: #94a3b8;">CAWANGAN: ${cawangan}</p>
             </div>
         `;
 
-        document.body.appendChild(pdfContainer);
-
-        // Setting output PDF (Quality & Saiz)
+        // 3. Setting Kualiti PDF
         var opt = {
             margin:       0,
             filename:     'Kupon_Iftar_' + noKupon + '.pdf',
             image:        { type: 'jpeg', quality: 1.0 },
-            html2canvas:  { scale: 2, useCORS: true },
+            html2canvas:  { scale: 2, backgroundColor: '#1e1b4b', useCORS: true }, // Paksa background biru gelap
             jsPDF:        { unit: 'px', format: [800, 450], orientation: 'landscape' }
         };
 
-        // Mulakan proses download
-        html2pdf().set(opt).from(pdfContainer.querySelector('#pdf-content')).save()
-        .then(() => {
-            // Buang elemen lepas siap download supaya tak semak HTML
-            document.body.removeChild(pdfContainer);
+        // 4. Proses & Download
+        html2pdf().set(opt).from(pdfHTML).save().then(() => {
+            Swal.close(); // Tutup loading bila dah siap download
+        }).catch(err => {
+            Swal.fire('Ralat', 'Gagal generate PDF: ' + err, 'error');
         });
     }
 
