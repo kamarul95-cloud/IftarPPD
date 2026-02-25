@@ -38,6 +38,10 @@
         background-color: #d97706; 
         border-color: #fbbf24;
     }
+    /* Scrollbar cantik untuk kotak statistik */
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.5); border-radius: 4px; }
   </style>
 </head>
 <body class="min-h-screen py-8 px-4 flex flex-col">
@@ -51,13 +55,26 @@
     </h1>
     <p class="text-indigo-200 tracking-widest uppercase text-sm font-bold mt-2 border-b border-indigo-500/30 inline-block pb-1">DUN Bukit Tunggal</p>
     <div class="mt-6 flex flex-col md:flex-row justify-center gap-3 text-xs font-mono text-amber-200 bg-black/40 border border-amber-500/20 py-3 px-5 rounded-xl mx-auto w-fit shadow-inner">
-        <span>📅 3 MAC 2026 (SELASA) / 13 RAMADAN</span> 
+        <span>📅 9 MAC 2026 (ISNIN) / 19 RAMADAN</span> 
         <span class="hidden md:inline text-slate-500">|</span> 
         <span>📍 STADIUM GONG BADAK</span>
     </div>
   </div>
 
   <div class="max-w-xl mx-auto w-full flex-grow">
+
+    <div id="statsSection" class="hidden card-glass p-5 rounded-xl mb-6 border-t-2 border-indigo-400 bg-indigo-900/40">
+        <div class="flex justify-between items-center border-b border-indigo-500/30 pb-3 mb-3">
+            <h3 class="text-indigo-200 font-bold text-xs uppercase flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-amber-400"></i> Statistik Cawangan
+            </h3>
+            <div class="bg-indigo-950 border border-indigo-500/50 px-3 py-1 rounded-full text-amber-400 font-bold text-[10px] tracking-widest uppercase shadow-inner" id="totalDaftar">
+                TOTAL: 0
+            </div>
+        </div>
+        <div id="cawanganStatsContainer" class="grid grid-cols-2 gap-2 text-[10px] max-h-32 overflow-y-auto pr-2 custom-scrollbar">
+            </div>
+    </div>
 
     <div class="card-glass p-5 rounded-xl mb-6 border-l-4 border-amber-500 bg-indigo-950/80">
       <h3 class="text-amber-400 font-bold text-sm uppercase mb-3 flex items-center gap-2">
@@ -75,7 +92,6 @@
     <form id="mainForm">
       
       <div class="card-glass p-6 rounded-2xl mb-6 border-t-2 border-amber-500 relative">
-        
         <div id="formOverlay" class="hidden absolute inset-0 bg-slate-900/80 backdrop-blur-sm z-20 rounded-2xl flex items-center justify-center">
             <div class="text-amber-400 font-bold flex flex-col items-center">
                 <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i> Sedang Menyemak...
@@ -205,6 +221,34 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyE2ZP356tZ2Xk7k7Fm3PX6qHZiKYUj1B_6g-IEf4EbrphdOVDkLnnJQeXYwR4RTLcvoA/exec"; 
     // ==========================================
 
+    // 🚀 PANGGIL STATISTIK BILA BROWSER BARU BUKA (REFRESH)
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "getStats" })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success" && data.total > 0) {
+                // Tunjuk Kotak Statistik
+                document.getElementById('statsSection').classList.remove('hidden');
+                document.getElementById('totalDaftar').innerText = 'TOTAL: ' + data.total;
+                
+                let html = '';
+                // Loop data cawangan yang dihantar dari Google Sheet
+                data.cawanganData.forEach(item => {
+                    html += `
+                    <div class="bg-indigo-950/80 border border-indigo-800/50 p-2 rounded flex justify-between items-center shadow-sm">
+                        <span class="text-indigo-200 truncate pr-2 uppercase font-semibold">${item.name}</span>
+                        <span class="text-amber-400 font-bold bg-indigo-900 px-2 py-0.5 rounded">${item.count}</span>
+                    </div>`;
+                });
+                document.getElementById('cawanganStatsContainer').innerHTML = html;
+            }
+        })
+        .catch(err => console.error("Error fetching stats:", err));
+    });
+
     function togglePayment(type) {
         const qr = document.getElementById('qrContainer');
         const fileInput = document.getElementById('uploadFile');
@@ -228,16 +272,13 @@
         document.getElementById('formOverlay').classList.add('hidden');
         
         if(result.found) {
-            // Auto fill fields
             document.getElementById('inputNama').value = result.nama;
             
-            // Format no telefon untuk letak dalam kotak
             let formTel = result.tel.toString();
             if(formTel.startsWith('60')) formTel = '0' + formTel.substring(2);
             document.getElementById('inputTel').value = formTel;
             
-            document.getElementById('inputIC').value = ""; // Kosongkan IC sebab DB lama takde
-            
+            document.getElementById('inputIC').value = ""; 
             if(result.umur) document.getElementById('inputUmur').value = result.umur; 
             
             if(result.cawangan) {
@@ -261,7 +302,7 @@
       });
     }
 
-    // FUNGSI LUKIS KAD (CANVAS NATIVE)
+    // FUNGSI LUKIS KAD (CANVAS NATIVE) - Tarikh Dikemaskini
     function generateTrueImage(nama, noKupon, cawangan) {
         const canvas = document.createElement('canvas');
         canvas.width = 800; canvas.height = 1000;
@@ -274,7 +315,9 @@
         ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 24px Arial'; ctx.fillText('UNDANGAN RASMI', 400, 130);
         ctx.fillStyle = '#ffffff'; ctx.font = 'bold 55px Arial'; ctx.fillText('IFTAR PEMUDA', 400, 210);
         ctx.font = 'bold 45px Arial'; ctx.fillText('DUN BUKIT TUNGGAL', 400, 270);
-        ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 20px Arial'; ctx.fillText('3 MAC 2026  |  13 RAMADAN  |  STADIUM GONG BADAK', 400, 360);
+        
+        // TARIKH BARU DALAM KAD
+        ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 20px Arial'; ctx.fillText('9 MAC 2026  |  19 RAMADAN  |  STADIUM GONG BADAK', 400, 360);
 
         ctx.setLineDash([15, 15]); ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5; ctx.strokeRect(150, 450, 500, 260); ctx.setLineDash([]);
         ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 26px Arial'; ctx.fillText('NO. KUPON ANDA', 400, 510);
@@ -325,7 +368,7 @@
                 <div class="space-y-4 mt-2">
                     <p class="text-sm text-indigo-200">Sila muat turun Kad Jemputan anda.</p>
                     <img src="${imageURL}" alt="Kad Iftar" class="w-full rounded-xl border-4 border-amber-500 shadow-2xl mx-auto block max-w-[320px]">
-                    <a href="${imageURL}" download="Kad_Iftar_Pemuda_${noKupon}.png" class="w-full mt-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-indigo-950 font-black py-4 px-4 rounded-xl flex items-center justify-center gap-2 no-underline">
+                    <a href="${imageURL}" download="Kad_Iftar_Pemuda_${noKupon}.png" class="w-full mt-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-indigo-950 font-black py-4 px-4 rounded-xl flex items-center justify-center gap-2 no-underline cursor-pointer">
                         <i class="fa-solid fa-download text-xl"></i> Muat Turun Kad
                     </a>
                 </div>
