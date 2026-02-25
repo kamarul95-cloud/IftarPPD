@@ -61,15 +61,15 @@
 
     <div class="card-glass p-5 rounded-xl mb-6 border-l-4 border-amber-500 bg-indigo-950/80">
       <h3 class="text-amber-400 font-bold text-sm uppercase mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-magnifying-glass"></i> Pernah Join Program Pemuda? Semak Sini
+        <i class="fa-solid fa-phone"></i> Pernah Join Program Pemuda? Semak Sini
       </h3>
       <div class="flex flex-col sm:flex-row gap-3">
-        <input type="number" id="searchIC" placeholder="Masukkan No. IC (Tanpa -)" class="w-full p-3 rounded-lg text-sm font-mono tracking-widest">
+        <input type="tel" id="searchTel" placeholder="Masukkan No. Telefon (Cth: 0196034517)" class="w-full p-3 rounded-lg text-sm font-mono tracking-widest">
         <button onclick="checkMemberDB()" type="button" class="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white px-6 py-3 rounded-lg font-bold text-sm uppercase whitespace-nowrap shadow-lg">
             Semak Rekod
         </button>
       </div>
-      <p class="text-xs text-indigo-300 mt-2 opacity-80">*Borang di bawah akan diisi secara automatik jika rekod anda dijumpai.</p>
+      <p class="text-xs text-indigo-300 mt-2 opacity-80">*Borang di bawah akan diisi secara automatik jika nombor telefon anda dijumpai.</p>
     </div>
 
     <form id="mainForm">
@@ -201,7 +201,7 @@
 
   <script>
     // ==========================================
-    // ⚠️ PASTE URL DEPLOYMENT ANDA DI SINI (MESTI BUAT DEPLOYMENT BARU)
+    // ⚠️ PASTE URL DEPLOYMENT ANDA DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyE2ZP356tZ2Xk7k7Fm3PX6qHZiKYUj1B_6g-IEf4EbrphdOVDkLnnJQeXYwR4RTLcvoA/exec"; 
     // ==========================================
 
@@ -212,16 +212,16 @@
         else { qr.classList.add('hidden'); fileInput.removeAttribute('required'); }
     }
 
-    // 🔍 FUNGSI SEMAK DATABASE LAMA
+    // 🔍 FUNGSI SEMAK DATABASE LAMA (GUNA NO TEL)
     function checkMemberDB() {
-      let icVal = document.getElementById('searchIC').value; 
-      if(!icVal) return Swal.fire({toast:true, position:'top-end', icon:'warning', title:'Masukkan No. IC', showConfirmButton: false, timer: 2000, background:'#1e293b', color:'#fff'});
+      let telVal = document.getElementById('searchTel').value; 
+      if(!telVal) return Swal.fire({toast:true, position:'top-end', icon:'warning', title:'Masukkan No. Telefon', showConfirmButton: false, timer: 2000, background:'#1e293b', color:'#fff'});
 
       document.getElementById('formOverlay').classList.remove('hidden');
 
       fetch(SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: "searchMember", ic: icVal })
+        body: JSON.stringify({ action: "searchMember", tel: telVal })
       })
       .then(res => res.json())
       .then(result => {
@@ -230,16 +230,18 @@
         if(result.found) {
             // Auto fill fields
             document.getElementById('inputNama').value = result.nama;
-            document.getElementById('inputIC').value = icVal; // Guna IC carian
-            document.getElementById('inputTel').value = result.tel;
             
-            // Umur (Boleh kosong kalau DB lama takde)
+            // Format no telefon untuk letak dalam kotak
+            let formTel = result.tel.toString();
+            if(formTel.startsWith('60')) formTel = '0' + formTel.substring(2);
+            document.getElementById('inputTel').value = formTel;
+            
+            document.getElementById('inputIC').value = ""; // Kosongkan IC sebab DB lama takde
+            
             if(result.umur) document.getElementById('inputUmur').value = result.umur; 
             
-            // Cawangan Dropdown
             if(result.cawangan) {
                 let selectCawangan = document.getElementById('inputCawangan');
-                // Set value dropdown (Pastikan string sama exact match)
                 for(let i=0; i<selectCawangan.options.length; i++) {
                     if(selectCawangan.options[i].value === result.cawangan.toUpperCase()) {
                         selectCawangan.selectedIndex = i;
